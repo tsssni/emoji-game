@@ -37,25 +37,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CharacterWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PauseWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PayWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AIItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AtkPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="BackgroundItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmojiDecisionTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmojiNodes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EmojiPlayerItem.cpp">
@@ -64,39 +61,51 @@
     <ClCompile Include="EmojiScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GroundItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlatformItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EmojiView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AtkPoint.cpp">
+    <ClCompile Include="GroundItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EmojiNodes.cpp">
+    <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EmojiDecisionTree.cpp">
+    <ClCompile Include="PauseWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PayWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="AIItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="AtkPoint.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="BackgroundItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <QtMoc Include="CharacterWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="MainWindow.h">
+    <ClInclude Include="EmojiDecisionTree.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="PauseWindow.h">
+    </ClInclude>
+    <ClInclude Include="EmojiNodes.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="PayWindow.h">
+    </ClInclude>
+    <QtMoc Include="EmojiPlayerItem.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="EmojiScene.h">
@@ -105,15 +114,24 @@
     <QtMoc Include="EmojiView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="EmojiPlayerItem.h">
+    <ClInclude Include="GroundItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="AtkPoint.h">
+    <ClInclude Include="Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="PauseWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="AIItem.h">
+    <QtMoc Include="PayWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <ClInclude Include="PlatformItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -124,28 +142,11 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="MainWindow.ui">
+    <CustomBuild Include="MainWindow.ui">
       <Filter>Form Files</Filter>
-    </QtUic>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BackgroundItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlatformItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GroundItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EmojiNodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EmojiDecisionTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <QtRcc Include="Backgr.qrc" />
   </ItemGroup>
 </Project>
