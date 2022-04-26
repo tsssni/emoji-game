@@ -1,6 +1,8 @@
 #ifndef PAYWINDOW_H
 #define PAYWINDOW_H
 #include <QMainWindow>
+#include <QLabel>
+
 
 class PayWindow : public QWidget
 {
@@ -8,7 +10,8 @@ class PayWindow : public QWidget
 public:
     PayWindow(QWidget* parent = nullptr);
     ~PayWindow();
-public slots:
+private:
+    QLabel* backgr;
 };
 
 #endif // PAYWINDOW_H

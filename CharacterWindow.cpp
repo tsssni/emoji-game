@@ -1,19 +1,19 @@
-#include "characterwindow.h"
+#include "CharacterWindow.h"
 #include "EmojiView.h"
 #include "EmojiScene.h"
 
 CharacterWindow::CharacterWindow(QWidget *parent) : 
-    QWidget(parent),mGameView(Q_NULLPTR),mScene(Q_NULLPTR),
-    mConBtn(Q_NULLPTR), mReBtn(Q_NULLPTR)
+    QWidget(parent),mConBtn(Q_NULLPTR),mReBtn(Q_NULLPTR),
+    mGameView(Q_NULLPTR),mScene(Q_NULLPTR)
 {
     this->setWindowTitle("choose one character");
-    this->setFixedSize(960,960);
+    this->setFixedSize(1080,640);
 
 
     //continue按钮
     mConBtn = new QPushButton("continue",this);
     mConBtn->setFixedSize(100,30);
-    mConBtn->move(430,850);
+    mConBtn->move(980,610);
     connect(mConBtn, &QPushButton::clicked,
         this,&CharacterWindow::createGameView);
 
@@ -21,11 +21,16 @@ CharacterWindow::CharacterWindow(QWidget *parent) :
     //返回上一级菜单(此时为主菜单)的按钮
     mReBtn = new QPushButton("Return", this);
     mReBtn->setFixedSize(100, 30);
-    mReBtn->move(430,900);
+    mReBtn->move(0,610);
     connect(mReBtn, &QPushButton::clicked, [=]() {
         emit this->backToLastWindow();
     });
-    
+
+    //background
+    QPalette pal =this->palette();
+    pal.setBrush(QPalette::Background,QBrush(QPixmap(":/new/prefix1/ch_rev.png")));
+    setPalette(pal);
+
 }
 
 void CharacterWindow::createGameView()

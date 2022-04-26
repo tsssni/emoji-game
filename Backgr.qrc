@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>pay.png</file>
+        <file>MWin_Rev.png</file>
+        <file>ch_rev.png</file>
+    </qresource>
+</RCC>
