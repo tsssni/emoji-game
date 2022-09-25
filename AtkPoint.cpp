@@ -91,7 +91,7 @@ void AtkPointItem::setHitFactor(const qreal& hitFactor)
 	qreal x = groundX + curHitValue * mHitHeight
 		* mPlayer->lastDirction();
 
-	if (mParentScene->checkHitColliding(this))
+	if (mParentScene->checkHitCollision(this))
 	{
 		hide();
 		mHitAnimation->stop();

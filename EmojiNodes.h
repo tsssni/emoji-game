@@ -39,10 +39,10 @@ public:
 	CondWalk(Node* root) :ConditionNode(root) {}
 	bool exec()
 	{
-		return IsWalkExecutable();
+		return isWalkExecutable();
 	}
 private:
-	bool IsWalkExecutable();
+	bool isWalkExecutable();
 };
 
 class CondJump : public ConditionNode//判断是否应该向上移动
@@ -51,10 +51,10 @@ public:
 	CondJump(Node* root) :ConditionNode(root) {}
 	bool exec()
 	{
-		return IsJumpExecutable();
+		return isJumpExecutable();
 	}
 private:
-	bool IsJumpExecutable();
+	bool isJumpExecutable();
 };
 
 class CondDown :public ConditionNode//判断是否应该向下移动
@@ -63,10 +63,10 @@ public:
 	CondDown(Node* root) :ConditionNode(root) {}
 	bool exec()
 	{
-		return IsDownExecutable();
+		return isDownExecutable();
 	}
 private:
-	bool IsDownExecutable();
+	bool isDownExecutable();
 };
 
 class BehaviorHit :public BehaviorNode//执行攻击

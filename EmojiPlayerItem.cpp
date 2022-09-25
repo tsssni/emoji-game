@@ -15,12 +15,19 @@ EmojiPlayerItem::EmojiPlayerItem
 	mParentScene(parentScene),
 	mHorizontalInput(0), mDirection(0), mLife(1),
 	mCoefficient(0), mLastDirection(1),
- mPlayerTimer(new QTimer)
+	mPlayerTimer(new QTimer)
 {
-	//每30ms检查一次是否水平移动或者下落 
-	mPlayerTimer->setInterval(30);
+	//每1ms检查一次是否水平移动或者下落 
+	mPlayerTimer->setInterval(5);
+	mPlayerTimer->start();
+	connect(mPlayerTimer, &QTimer::timeout, this, &EmojiPlayerItem::checkOutsideOfGameView);
+	connect(mPlayerTimer, &QTimer::timeout, this, &EmojiPlayerItem::checkMoveCollision);
 	connect(mPlayerTimer, &QTimer::timeout, this, &EmojiPlayerItem::moveHorizontalEmojiPlayer);
-	connect(mPlayerTimer, &QTimer::timeout, this, &EmojiPlayerItem::moveDownEmojiPlayer);
+
+	connect(this, &EmojiPlayerItem::directionChanged, this, &EmojiPlayerItem::addHorizontalInput);
+	connect(this, &EmojiPlayerItem::jumpStart, this, &EmojiPlayerItem::moveUpEmojiPlayer);
+	connect(this, &EmojiPlayerItem::hitStart, this, &EmojiPlayerItem::hitAIPlayer);
+
 	
 	mPoint = new AtkPointItem(QPixmap("atkpoint.png"), this, mParentScene);
 	mPoint->setPos(pos().x() + boundingRect().width() / 2,
@@ -30,9 +37,21 @@ EmojiPlayerItem::EmojiPlayerItem
 	mPoint->setOffsetY(10);
 	mPoint->hide();
 
+	setWalkAnimation();
 	setJumpAnimation();
 	setDownAnimation();
 	setBeHitAnimation();
+}
+
+void EmojiPlayerItem::setWalkAnimation()
+{
+	mWalkAnimation = new QPropertyAnimation;
+	mWalkAnimation->setTargetObject(this);
+	mWalkAnimation->setPropertyName("walkFactor");
+	mWalkAnimation->setStartValue(0);
+	mWalkAnimation->setEndValue(1);	
+	mWalkAnimation->setDuration(5);
+	mWalkAnimation->setEasingCurve(QEasingCurve::InQuad);
 }
 
 void EmojiPlayerItem::setJumpAnimation()
@@ -41,11 +60,10 @@ void EmojiPlayerItem::setJumpAnimation()
 	mJumpAnimation->setTargetObject(this);
 	mJumpAnimation->setPropertyName("jumpFactor");
 	mJumpAnimation->setStartValue(0);
-	mJumpAnimation->setKeyValueAt(0.5, 1);
-	mJumpAnimation->setEndValue(-3.5);//这个值是考虑到跳出界外的情况
-	//否则会降落在半空中
-	mJumpAnimation->setDuration(800);
-	mJumpAnimation->setEasingCurve(QEasingCurve::OutInQuad);
+	mJumpAnimation->setKeyValueAt(0.2, 1);
+	mJumpAnimation->setEndValue(-3.5);	
+	mJumpAnimation->setDuration(5000);
+	mJumpAnimation->setEasingCurve(QEasingCurve::OutQuart);
 }
 
 void EmojiPlayerItem::setDownAnimation()
@@ -54,11 +72,9 @@ void EmojiPlayerItem::setDownAnimation()
 	mDownAnimation->setTargetObject(this);
 	mDownAnimation->setPropertyName("downFactor");
 	mDownAnimation->setStartValue(0);
-	mDownAnimation->setKeyValueAt(0.5, -1.5);
-	mDownAnimation->setEndValue(-5);
-	//-5在该地图中可以保证会下落到界外
-	mDownAnimation->setDuration(600);
-	mDownAnimation->setEasingCurve(QEasingCurve::InQuad);
+	mDownAnimation->setEndValue(1);
+	mDownAnimation->setDuration(10000);
+	mDownAnimation->setEasingCurve(QEasingCurve::Linear);
 }
 
 void EmojiPlayerItem::setBeHitAnimation()
@@ -68,10 +84,14 @@ void EmojiPlayerItem::setBeHitAnimation()
 	mBeHitAnimation->setPropertyName("beHitFactor");
 	mBeHitAnimation->setStartValue(0);
 	mBeHitAnimation->setKeyValueAt(0.5, 1);
-	mBeHitAnimation->setEndValue(-3.5);
-	//防止停留在半空中
+	mBeHitAnimation->setEndValue(0);
 	mBeHitAnimation->setDuration(800);
 	mBeHitAnimation->setEasingCurve(QEasingCurve::OutInQuad);
+}
+
+QPropertyAnimation* EmojiPlayerItem::walkAnimation()
+{
+	return mWalkAnimation;
 }
 
 QPropertyAnimation* EmojiPlayerItem::jumpAnimation()
@@ -96,20 +116,6 @@ QTimer* EmojiPlayerItem::playerTimer()
 
 void EmojiPlayerItem::checkTimer()
 {
-	//死亡时不执行任何动作
-	if (life() == 0) {
-		mPlayerTimer->stop();
-		return;
-	}
-	//方向有-1 0 1三个状态,详见addHorizontalInput
-	if (direction() == 0) {
-		mPlayerTimer->stop();
-		return;
-	}
-	else if (!mPlayerTimer->isActive()) {
-		mPlayerTimer->start();
-		return;
-	}
 }
 
 int EmojiPlayerItem::direction() const
@@ -137,29 +143,11 @@ int EmojiPlayerItem::lastDirction()
 	return mLastDirection;
 }
 
-bool EmojiPlayerItem::checkOutsideOfGameView()
-{
-	//除了超出上边框,其他情况都返回
-	qreal x = pos().x();
-	qreal y = pos().y();
-	if (x<0 || x>scene()->width() || y>scene()->height() - 150)
-	{
-		//由于跳跃和被击打动作的endvalue可能不够持续下落,即产生
-		//停在半空中的情况,故将复活判断值上调
-		return true;
-	}
-	
-	return false;
-}
-
 void EmojiPlayerItem::restoreLife()
 {
 	this->setPos(mStartPosX, mStartPosY);
 	mLife = 1;
 	mCoefficient = 0;
-	mDirection = 0;
-	mHorizontalInput = 0;
-	mFilter = 1;
 	
 	return;
 }
@@ -218,11 +206,6 @@ void EmojiPlayerItem::addHorizontalInput(int input)
 	setDirection(qBound(-1, mHorizontalInput, 1));
 }
 
-void EmojiPlayerItem::setHorizontalInput(int input)
-{
-	mHorizontalInput = input;
-}
-
 void EmojiPlayerItem::keyPressEvent(QKeyEvent* event)
 {
 	//长按则返回
@@ -234,43 +217,24 @@ void EmojiPlayerItem::keyPressEvent(QKeyEvent* event)
 		return;
 	}
 
-	//Filter为1代表刚刚死亡,若此时继续按移动键则将该键被按过记录下来并返回
-	//用于在keyReleaseEvent中过滤
-	if (mFilter == 1)
-	{
-		if (event->key() == Qt::Key_A)
-		{
-			mAPressed = 1;
-		}
-		else if (event->key() == Qt::Key_D)
-		{
-			mDPressed = 1;
-		}
-		return;
-	}
-
 	switch (event->key()) {
 
 	case Qt::Key_A:
-		mAPressed = 1;
-		addHorizontalInput(-1);
-		checkTimer();
+		emit(directionChanged(-1));
 		break;
 
 	case Qt::Key_D:
-		mDPressed = 1;
-		addHorizontalInput(1);
-		checkTimer();
+		emit(directionChanged(1));
 		break;
-
+	}
+	
+	switch(event->key()) {
 	case Qt::Key_Space:
-		jump();
+		emit(jumpStart());
 		break;
 
 	case Qt::Key_J:
-		mPoint->show();//攻击时才会将攻击点显示出来
-		mPoint->hitTimer()->start();
-		mPoint->hit();
+		emit(hitStart());
 		break;
 
 	default:
@@ -284,46 +248,12 @@ void EmojiPlayerItem::keyReleaseEvent(QKeyEvent* event)
 		return;
 	}
 	
-	if (life() == 0) return;
-
-	//这两个键的release事件不需要被处理
-	if (event->key() == Qt::Key_J || event->key() == Qt::Key_Space)
-	{
-		return;
-	}
-
-	//若刚刚死亡且两个键都处在被按住的状态,则释放一个键并返回
-	if (mFilter == 1 && (mAPressed && mDPressed))
-	{
-		switch (event->key()) {
-		case Qt::Key_A:
-			mAPressed = 0;
-			break;
-		case Qt::Key_D:
-			mDPressed = 0;
-			break;
-		default:
-			break;
-		}
-		return;
-	}
-	
-	if (mFilter == 1) {
-		mFilter = 0;//若死亡则原来的keyRelease不执行
-		//下一次出现release才会执行
-		return;
-	}
-
 	switch (event->key()) {
 	case Qt::Key_A:
-		mAPressed = 0;
-		addHorizontalInput(1);
-		checkTimer();
+		emit(directionChanged(1));
 		break;
 	case Qt::Key_D:
-		mDPressed = 0;
-		addHorizontalInput(-1);
-		checkTimer();
+		emit(directionChanged(-1));
 		break;
 	default:
 		break;
@@ -362,6 +292,15 @@ AtkPointItem* EmojiPlayerItem::point()
 	return mPoint;
 }
 
+qreal EmojiPlayerItem::walkFactor() const
+{
+	return mWalkFactor;
+}
+
+void EmojiPlayerItem::setWalkFactor(const qreal& walkFactor)
+{
+}
+
 qreal EmojiPlayerItem::jumpFactor() const
 {
 	return mJumpFactor;
@@ -376,27 +315,8 @@ void EmojiPlayerItem::setJumpFactor(const qreal& jumpFactor)
 	mJumpFactor = jumpFactor;
 	emit jumpFactorChanged(mJumpFactor);
 
-	qreal groundY = mJumpStartLevel;
-	qreal curJumpValue = mJumpAnimation->currentValue().toReal();
-	qreal y = groundY - curJumpValue * mJumpHeight;
+	qreal y = mJumpStartLevel - mJumpFactor * mJumpHeight;
 	setY(y);
-
-	if (checkOutsideOfGameView()
-		&& life() == 1) {
-		restoreLife();
-		mJumpAnimation->stop();
-		return;
-	}
-
-	qreal collideY = mParentScene->checkColliding(this);
-	if (curJumpValue < mLastJumpValue
-		&& collideY != EmojiScene::CHECK_COLLIDING_FAILURE_HEIGHT)
-	{
-		setY(collideY);
-		mJumpAnimation->stop();
-		return;
-	}
-	mLastJumpValue = curJumpValue;
 }
 
 qreal EmojiPlayerItem::downFactor() const
@@ -413,27 +333,7 @@ void EmojiPlayerItem::setDownFactor(const qreal& downFactor)
 	mDownFactor = downFactor;
 	emit downFactorChanged(mDownFactor);
 
-	qreal groundY = mDownStartLevel;
-	qreal curDownValue = mDownAnimation->currentValue().toReal();
-	qreal y = groundY - curDownValue * mDownHeight;
-
-	if (checkOutsideOfGameView()
-		&& life() == 1) {
-		restoreLife();
-		mDownAnimation->stop();
-		return;
-	}
-
-	//下落过程中检测是否可以降落
-	qreal collideY = mParentScene->checkColliding(this);
-
-	if (collideY != EmojiScene::CHECK_COLLIDING_FAILURE_HEIGHT)
-	{
-		setY(collideY);
-		mDownAnimation->stop();
-		return;
-	}
-	
+	qreal y = mDownStartLevel  + mDownFactor * mDownHeight;
 	setY(y);
 }
 
@@ -451,37 +351,15 @@ void EmojiPlayerItem::setBeHitFactor(const qreal& beHitFactor)
 	mBeHitFactor = beHitFactor;
 	emit beHitFactorChanged(mBeHitFactor);
 
-	qreal curBeHitTime = mBeHitAnimation->currentValue().toReal();
 	qreal curBeHitStep = mBeHitAnimation->currentTime();
-
 	const int cushionCoefficient = 20000;//除以这个值使得跳跃距离得以缩短
 
-	qreal y = mBeHitStartLevel - curBeHitTime * mBeHitHeight;
+	qreal y = mBeHitStartLevel - mBeHitFactor * mBeHitHeight;
 	qreal x = mBeHitStartPos + curBeHitStep *
 		mBeHitHeight * mBeHitDirection *
 		coefficient() / cushionCoefficient;
-
-	if (checkOutsideOfGameView()
-		&& life() == 1) {
-		restoreLife();
-		mBeHitAnimation->stop();
-		return;
-	}
-
-	//在下降时检测是否可以降落
-	qreal curBeHitValue = mBeHitAnimation->currentValue().toReal();
-	qreal collideY = mParentScene->checkColliding(this);
-	if (mLastBeHitValue> curBeHitValue
-		&& collideY != EmojiScene::CHECK_COLLIDING_FAILURE_HEIGHT)
-	{
-		setY(collideY);
-		mBeHitAnimation->stop();
-		return;
-	}
-
 	setX(x);
 	setY(y);
-	mLastBeHitValue = curBeHitValue;
 }
 
 void EmojiPlayerItem::moveHorizontalEmojiPlayer()
@@ -495,25 +373,74 @@ void EmojiPlayerItem::moveHorizontalEmojiPlayer()
 		return;
 	}
 
-	const int dx = direction() * mWorldSpeed;
+	const qreal dx = (qreal)direction() * mWorldSpeed;
 	qreal newX = pos().x() + dx;
-
 	setX(newX);
 }
 
-void EmojiPlayerItem::moveDownEmojiPlayer()
+void EmojiPlayerItem::moveUpEmojiPlayer()
 {
-	if (QAbstractAnimation::Running == mBeHitAnimation->state())
+	jump();
+}
+
+void EmojiPlayerItem::hitAIPlayer()
+{
+	mPoint->show();
+	mPoint->hitTimer()->start();
+	mPoint->hit();
+}
+
+void EmojiPlayerItem::checkOutsideOfGameView()
+{
+	qreal x = pos().x();
+	qreal y = pos().y();
+	if (x<0 || x>scene()->width() || y > scene()->height() - 150)
+	{
+		//由于跳跃和被击打动作的endvalue可能不够持续下落,即产生
+		//停在半空中的情况,故将复活判断值上调
+		stopAnimations();
+		restoreLife();
+	}
+}
+
+void EmojiPlayerItem::checkMoveCollision()
+{
+	if (QAbstractAnimation::Running == mJumpAnimation->state()
+		&& mJumpAnimation->currentTime() < 10)
 	{
 		return;
 	}
-	if (!mParentScene->checkDownConditionColliding(this)) {
+
+	if (QAbstractAnimation::Running == mBeHitAnimation->state()
+		&& mBeHitAnimation->currentTime() < 10)
+	{
 		return;
 	}
 
-	if (QAbstractAnimation::Running == mJumpAnimation->state()) {
-		return;
+	if (!mParentScene->checkMoveCollision(this) 
+		&& QAbstractAnimation::Stopped == mJumpAnimation->state() 
+		&& QAbstractAnimation::Stopped==mBeHitAnimation->state())
+	{
+		mDownStartLevel = pos().y();
+		mDownAnimation->start();
 	}
-	mDownStartLevel = pos().y();
-	mDownAnimation->start();
+}
+
+void EmojiPlayerItem::stopAnimations()
+{
+	if (QAbstractAnimation::Running == mDownAnimation->state())
+	{
+		mDownAnimation->stop();
+	}
+
+	if (QAbstractAnimation::Running == mJumpAnimation->state())
+	{
+		mJumpAnimation->stop();
+	}
+
+	if (QAbstractAnimation::Running == mBeHitAnimation->state())
+	{
+		mBeHitAnimation->stop();
+	}
+
 }

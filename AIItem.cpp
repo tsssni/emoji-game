@@ -17,15 +17,6 @@ AIItem::AIItem(const QPixmap& pixmap,
 	//每30ms执行一次决策树
 	connect(mAITimer, &QTimer::timeout,
 		this, &AIItem::traverseDecisionTree);
-	
-	mPlayerTimer = new QTimer;
-	mPlayerTimer->setInterval(30);
-	
-	//每30ms判断一次是否移动和是否下落
-	connect(mPlayerTimer, &QTimer::timeout,
-		this, &AIItem::moveHorizontalEmojiPlayer);
-	connect(mPlayerTimer, &QTimer::timeout,
-		this, &AIItem::moveDownEmojiPlayer);
 }
 
 //由于决策树没有继承QObject 所以需要手动delete

@@ -36,7 +36,7 @@ CharacterWindow::CharacterWindow(QWidget *parent) :
 void CharacterWindow::createGameView()
 {
     mGameView = new EmojiView;
-    mScene = new EmojiScene(4);
+    mScene = new EmojiScene();
     mGameView->mySetScene(mScene);
     mGameView->setRenderHint(QPainter::Antialiasing);
     mGameView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

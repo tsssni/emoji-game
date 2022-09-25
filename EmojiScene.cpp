@@ -11,18 +11,17 @@
 #include <QImage>
 #include <QPixmap>
 
-#define PLATFORM1 270-160
-#define PLATFORM2 270
+#define PLATFORM1 420-160
+#define PLATFORM2 420
 //在设计aiplayer时，应当注意到，jump函数中可能存在emojiplayer与aiplayer碰撞的情况
 //并且aiplayer的jump函数应当进行适当修改，以及mJumpStartLevel对于aiplayer不适用
-EmojiScene::EmojiScene(int platformNumber)
+EmojiScene::EmojiScene()
 	:
 	mEmojiPlayer(Q_NULLPTR),
 	mAIPlayer(Q_NULLPTR),
 	mBackground(Q_NULLPTR),
 	mGround(Q_NULLPTR),
-	mPlatform(Q_NULLPTR),
-	mPlatformNumber(platformNumber)
+	mPlatform(Q_NULLPTR)
 {
 	mBackground = new BackgroundItem(QPixmap("Background.png"));
 	setSceneRect(mBackground->boundingRect());
@@ -36,8 +35,8 @@ EmojiScene::EmojiScene(int platformNumber)
 		height() - groundRect.height());
 	addItem(mGround);
 
-	mPlatform = new PlatformItem * [mPlatformNumber];
-	for (int i = 0; i < mPlatformNumber; ++i)
+	mPlatform = new PlatformItem * [4];
+	for (int i = 0; i < 4; ++i)
 	{
 		mPlatform[i] = new PlatformItem(QPixmap("Platform.png"));
 		QRectF platformRect = mPlatform[i]->boundingRect();
@@ -79,7 +78,7 @@ EmojiScene::~EmojiScene()
 	if (mGround) delete mGround;
 	if (mPlatform)
 	{
-		for (int i = 0; i < mPlatformNumber; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
 			delete mPlatform[i];
 		}
@@ -99,35 +98,22 @@ void EmojiScene::keyReleaseEvent(QKeyEvent* event)
 	mEmojiPlayer->keyReleaseEvent(event);
 }
 
-qreal EmojiScene::checkColliding(EmojiPlayerItem* player)
-{
-	for (QGraphicsItem* item : collidingItems(player)) {
-
-		//这些物体不需要被检测是否可以降落在上面
-		if (item == mBackground || item == mEmojiPlayer
-			|| item == mEmojiPlayer->point() || item == mAIPlayer
-			|| item == mAIPlayer->point())
-		{
-			continue;
-		}
-
-		//若检测成功则返回降落坐标
-		return item->pos().y() - mEmojiPlayer->boundingRect().height();
-	}
-	return CHECK_COLLIDING_FAILURE_HEIGHT;
-}
-
-bool EmojiScene::checkDownConditionColliding(EmojiPlayerItem* player)
+bool EmojiScene::checkMoveCollision(EmojiPlayerItem* player)
 {
 
 	//由于角色可能并非精准的踩在物体上,故行走时经常会出发下降动画
 	//只需要判断角色脚部与物体顶部y坐标之差是否在一个小范围内即可
 	//不需要二者完全相等
 	
-	const static qreal delta = 1;
+	const static qreal delta = 7;
 
+	int dir = player->lastDirction();
 	qreal playerLeft = player->pos().x();
-	qreal playerRight = player->pos().x() + player->boundingRect().width();
+	qreal playerRight = player->pos().x() + dir * player->boundingRect().width();
+	if (dir == -1)
+	{
+		std::swap(playerLeft, playerRight);
+	}
 	qreal playerBottom = player->pos().y() + player->boundingRect().height();
 
 	for (QGraphicsItem* item : this->items())
@@ -140,21 +126,22 @@ bool EmojiScene::checkDownConditionColliding(EmojiPlayerItem* player)
 		}
 
 		qreal itemLeft = item->pos().x();
-		qreal itemRight = item->pos().x() + item->boundingRect().width() + player->boundingRect().width();
+ 		qreal itemRight = item->pos().x() + item->boundingRect().width();
 		qreal itemTop = item->pos().y();
 
-		if (playerLeft > itemLeft && playerLeft < itemRight
-			&& playerRight > itemLeft && playerRight < itemRight
-			&& playerBottom > itemTop - delta && playerBottom < itemTop + delta)
+		if (playerRight > itemLeft && playerLeft < itemRight
+ 			&& playerBottom > itemTop - delta && playerBottom < itemTop + delta)
 		{
-			return false;
+			player->setY(itemTop - player->boundingRect().height());
+			player->stopAnimations();
+			return true;
 		}
 	}
 
-	return true;
+	return false;
 }
 
-bool EmojiScene::checkHitColliding(AtkPointItem* atkPoint)
+bool EmojiScene::checkHitCollision(AtkPointItem* atkPoint)
 {
 	//判断攻击点是否打到角色
 	for (QGraphicsItem* item : collidingItems(atkPoint)) {

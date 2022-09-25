@@ -85,6 +85,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EmojiMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="AIItem.h">
@@ -148,5 +151,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Backgr.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EmojiMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

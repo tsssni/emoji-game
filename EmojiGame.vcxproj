@@ -14,7 +14,7 @@
     <ProjectGuid>{59DD104F-3FD3-3F2B-BC3F-43A3E4D578CE}</ProjectGuid>
     <RootNamespace>EmojiGame</RootNamespace>
     <Keyword>QtVS_v304</Keyword>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.19041.0</WindowsTargetPlatformMinVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
@@ -96,7 +96,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>"C:\Program Files (x86)\Windows Kits\10\lib\10.0.19041.0\um\x64\shell32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\..\openssl\lib;..\..\..\..\Utils\my_sql\mysql-5.6.11-winx64\lib;..\..\..\..\Utils\postgresql\pgsql\lib;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -181,6 +181,7 @@
     <ClCompile Include="BackgroundItem.cpp" />
     <ClCompile Include="CharacterWindow.cpp" />
     <ClCompile Include="EmojiDecisionTree.cpp" />
+    <ClCompile Include="EmojiMap.cpp" />
     <ClCompile Include="EmojiNodes.cpp" />
     <ClCompile Include="EmojiPlayerItem.cpp" />
     <ClCompile Include="EmojiScene.cpp" />
@@ -202,6 +203,7 @@
     <QtMoc Include="CharacterWindow.h">
     </QtMoc>
     <ClInclude Include="EmojiDecisionTree.h" />
+    <ClInclude Include="EmojiMap.h" />
     <ClInclude Include="EmojiNodes.h" />
     <QtMoc Include="EmojiPlayerItem.h">
     </QtMoc>

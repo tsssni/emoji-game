@@ -127,7 +127,7 @@ bool CondNear::isNear()
     }
 }
 
-bool CondWalk::IsWalkExecutable()
+bool CondWalk::isWalkExecutable()
 {
     RootSel* root = dynamic_cast<RootSel*>(mRoot);
     QGraphicsScene* scene = root->AI()->scene();
@@ -157,7 +157,7 @@ bool CondWalk::IsWalkExecutable()
     }
 }
 
-bool CondJump::IsJumpExecutable()
+bool CondJump::isJumpExecutable()
 {
     RootSel* root = dynamic_cast<RootSel*>(mRoot);
     QGraphicsScene* scene = root->AI()->scene();
@@ -185,7 +185,7 @@ bool CondJump::IsJumpExecutable()
     }
 }
 
-bool CondDown::IsDownExecutable()
+bool CondDown::isDownExecutable()
 {
     RootSel* root = dynamic_cast<RootSel*>(mRoot);
     QGraphicsScene* scene = root->AI()->scene();

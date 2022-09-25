@@ -16,7 +16,7 @@ class EmojiScene :
     Q_OBJECT
     friend class EmojiView;
 public:
-    EmojiScene(int platformNumber);
+    EmojiScene();
     virtual ~EmojiScene();
 
 protected:
@@ -26,13 +26,12 @@ protected:
 public:
         
     //不同情况下的碰撞检测
-    qreal checkColliding(EmojiPlayerItem* player);
-    bool checkDownConditionColliding(EmojiPlayerItem* player);
-    bool checkHitColliding(AtkPointItem* atkPoint);
+	bool checkMoveCollision(EmojiPlayerItem* player);
+    bool checkHitCollision(AtkPointItem* atkPoint);
 
     //用该值表示下落过程中未碰撞任何物体的情况
     enum {
-        CHECK_COLLIDING_FAILURE_HEIGHT = -100
+        CHECK_COLLISION_FAILURE_HEIGHT = -100
     };
 
 private:
@@ -41,6 +40,5 @@ private:
     BackgroundItem* mBackground;
     GroundItem* mGround;
     PlatformItem** mPlatform;
-    int mPlatformNumber;
 };
 

@@ -10,6 +10,12 @@ class EmojiPlayerItem :
     public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
+    
+    //该Property用于执行行走动画
+    Q_PROPERTY(qreal walkFactor
+        READ walkFactor
+        WRITE setWalkFactor
+        NOTIFY walkFactorChanged)
     //该Property用于执行跳跃动画
     Q_PROPERTY(qreal jumpFactor
         READ jumpFactor
@@ -30,13 +36,17 @@ public:
         EmojiScene* parentScene,
         QGraphicsItem* parent = Q_NULLPTR);
 
+    virtual void setWalkAnimation();
     virtual void setJumpAnimation();
     virtual void setDownAnimation();
     virtual void setBeHitAnimation();
 
+    QPropertyAnimation* walkAnimation();
     QPropertyAnimation* jumpAnimation();
     QPropertyAnimation* downAnimation();
     QPropertyAnimation* beHitAnimation();
+
+    void stopAnimations();
 
     QTimer* playerTimer();
     void checkTimer();//检查时钟确定平移方向
@@ -45,7 +55,7 @@ public:
     void setDirection(int direction);
     int lastDirction();//返回当前朝向
 
-    virtual bool checkOutsideOfGameView();//检查是否出界从而需要重生
+    //virtual bool checkOutsideOfGameView();//检查是否出界从而需要重生
     virtual void restoreLife();
     virtual int life()const;
     virtual void setLife();
@@ -61,10 +71,6 @@ public:
     qreal startPosX()const;
     qreal startPosY()const;
 
-    //用于平移的函数
-    void addHorizontalInput(int input);
-    void setHorizontalInput(int input);
-
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void keyReleaseEvent(QKeyEvent* event);
 
@@ -77,6 +83,9 @@ public:
 
 public:
     //通过factor来控制动画执行进度
+    qreal walkFactor()const;
+    void setWalkFactor(const qreal& walkFactor);
+
     qreal jumpFactor()const;
     void setJumpFactor(const qreal &jumpFactor);
 
@@ -87,22 +96,31 @@ public:
     void setBeHitFactor(const qreal& beHitFactor);
 
 signals:
+    void walkFactorChanged(qreal);
     void jumpFactorChanged(qreal);
     void downFactorChanged(qreal);
     void beHitFactorChanged(qreal);
+    void directionChanged(int);
+    void jumpStart();
+    void hitStart();
 
 public slots:
+    void addHorizontalInput(int input); //通过修改mDirection值来决定行走方向
     void moveHorizontalEmojiPlayer();
-    void moveDownEmojiPlayer();
+    void moveUpEmojiPlayer();
+    void hitAIPlayer();
+    void checkOutsideOfGameView();
+    void checkMoveCollision();
 
 protected:
+
     int mLastDirection;//只可能是1或者-1的朝向
     int mDirection;//角色的朝向
 
     int mLife;//角色生命
     int mCoefficient;//影响系数
     int mHorizontalInput;//决定朝向
-
+   
     qreal mJumpStartLevel;
     qreal mLastJumpValue;
     qreal mJumpHeight = 180;
@@ -123,20 +141,16 @@ protected:
     AtkPointItem* mPoint;
     QTimer* mPlayerTimer;
 
+    QPropertyAnimation* mWalkAnimation;
     QPropertyAnimation* mJumpAnimation;
     QPropertyAnimation* mDownAnimation;
     QPropertyAnimation* mBeHitAnimation;
 
+    qreal mWalkFactor;
     qreal mJumpFactor;
     qreal mDownFactor;
     qreal mBeHitFactor;
 
-    int mWorldSpeed = 5;
-    int mFilter = 0;//若死亡时没有松开按键,keyReleaseEvent中会造成各种问题,
-    //所以需要过滤掉死亡之前的按键信号
-
-    //这两个值用于解决复活时同时按住a和d所造成的问题
-    bool mAPressed = 0;
-    bool mDPressed = 0;
+    qreal mWorldSpeed = 1;
 };
 

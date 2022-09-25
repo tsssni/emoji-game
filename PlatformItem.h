@@ -7,5 +7,6 @@ class PlatformItem :
 public:
     PlatformItem(const QPixmap& pixmap,
         QGraphicsItem* parent = Q_NULLPTR);
+    PlatformItem(const PlatformItem&);
 };
 
