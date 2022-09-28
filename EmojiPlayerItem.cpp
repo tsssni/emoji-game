@@ -17,6 +17,8 @@ EmojiPlayerItem::EmojiPlayerItem
 	mCoefficient(0), mLastDirection(1),
 	mPlayerTimer(new QTimer)
 {
+	mScene = parentScene;
+
 	//每1ms检查一次是否水平移动或者下落 
 	mPlayerTimer->setInterval(5);
 	mPlayerTimer->start();
@@ -30,8 +32,7 @@ EmojiPlayerItem::EmojiPlayerItem
 
 	
 	mPoint = new AtkPointItem(QPixmap("atkpoint.png"), this, mParentScene);
-	mPoint->setPos(pos().x() + boundingRect().width() / 2,
-		pos().y() + 10);
+	mPoint->setPos(x() + boundingRect().width() / 2, y() + 10);
 	mParentScene->addItem(mPoint);
 	mPoint->setOffsetX(boundingRect().width() / 2);
 	mPoint->setOffsetY(10);
@@ -83,10 +84,10 @@ void EmojiPlayerItem::setBeHitAnimation()
 	mBeHitAnimation->setTargetObject(this);
 	mBeHitAnimation->setPropertyName("beHitFactor");
 	mBeHitAnimation->setStartValue(0);
-	mBeHitAnimation->setKeyValueAt(0.5, 1);
-	mBeHitAnimation->setEndValue(0);
-	mBeHitAnimation->setDuration(800);
-	mBeHitAnimation->setEasingCurve(QEasingCurve::OutInQuad);
+	mBeHitAnimation->setKeyValueAt(0.2, 1);
+	mBeHitAnimation->setEndValue(-3.5);
+	mBeHitAnimation->setDuration(5000);
+	mBeHitAnimation->setEasingCurve(QEasingCurve::OutQuart);
 }
 
 QPropertyAnimation* EmojiPlayerItem::walkAnimation()
@@ -167,12 +168,12 @@ int EmojiPlayerItem::coefficient() const
 	return mCoefficient;
 }
 
-void EmojiPlayerItem::restorecoefficient()
+void EmojiPlayerItem::restoreCoefficient()
 {
 	mCoefficient = 0;
 }
 
-void EmojiPlayerItem::addcoefficient()
+void EmojiPlayerItem::addCoefficient()
 {
 	mCoefficient += 5;
 }
@@ -265,7 +266,8 @@ void EmojiPlayerItem::jump()
 	if ((QAbstractAnimation::Running != mBeHitAnimation->state()
 		|| QAbstractAnimation::Running != mDownAnimation->state())
 		&& QAbstractAnimation::Stopped == mJumpAnimation->state()) {
-		mJumpStartLevel = pos().y();
+		setCurrPlatform(-1);
+		mJumpStartLevel = y();
 		mLastJumpValue = 0;
 		mJumpAnimation->start();
 	}
@@ -274,10 +276,11 @@ void EmojiPlayerItem::jump()
 void EmojiPlayerItem::beHit()
 {
 	if (QAbstractAnimation::Stopped == mBeHitAnimation->state()) {
-		addcoefficient();
-		mBeHitStartLevel = pos().y();
+		setCurrPlatform(-1);
+		addCoefficient();
+		mBeHitStartLevel = y();
 		mLastBeHitValue = 0;
-		mBeHitStartPos = pos().x();
+		mBeHitStartPos = x();
 		mBeHitAnimation->start();
 	}
 }
@@ -362,6 +365,16 @@ void EmojiPlayerItem::setBeHitFactor(const qreal& beHitFactor)
 	setY(y);
 }
 
+void EmojiPlayerItem::setCurrPlatform(int index)
+{
+	mCurrPlatform = index;
+}
+
+int EmojiPlayerItem::platform()
+{
+	return mCurrPlatform;
+}
+
 void EmojiPlayerItem::moveHorizontalEmojiPlayer()
 {
 	if (QAbstractAnimation::Running == mBeHitAnimation->state())
@@ -373,8 +386,8 @@ void EmojiPlayerItem::moveHorizontalEmojiPlayer()
 		return;
 	}
 
-	const qreal dx = (qreal)direction() * mWorldSpeed;
-	qreal newX = pos().x() + dx;
+ 	const qreal dx = (qreal)direction() * mWorldSpeed;
+	qreal newX = x() + dx;
 	setX(newX);
 }
 
@@ -392,8 +405,8 @@ void EmojiPlayerItem::hitAIPlayer()
 
 void EmojiPlayerItem::checkOutsideOfGameView()
 {
-	qreal x = pos().x();
-	qreal y = pos().y();
+	qreal x = this->x();
+	qreal y = this->y();
 	if (x<0 || x>scene()->width() || y > scene()->height() - 150)
 	{
 		//由于跳跃和被击打动作的endvalue可能不够持续下落,即产生
@@ -421,7 +434,8 @@ void EmojiPlayerItem::checkMoveCollision()
 		&& QAbstractAnimation::Stopped == mJumpAnimation->state() 
 		&& QAbstractAnimation::Stopped==mBeHitAnimation->state())
 	{
-		mDownStartLevel = pos().y();
+		setCurrPlatform(-1);
+		mDownStartLevel = y();
 		mDownAnimation->start();
 	}
 }
@@ -443,4 +457,9 @@ void EmojiPlayerItem::stopAnimations()
 		mBeHitAnimation->stop();
 	}
 
+}
+
+EmojiScene* EmojiPlayerItem::scene()
+{
+	return mScene;
 }

@@ -5,23 +5,23 @@
 #include "PlatformItem.h"
 #include "AtkPoint.h"
 #include "AIItem.h"
+#include "EmojiMap.h"
 
 #include <QKeyEvent>
 #include <QPropertyAnimation>
 #include <QImage>
 #include <QPixmap>
 
-#define PLATFORM1 420-160
-#define PLATFORM2 420
+#define PLATFORM1 460-160*2
+#define PLATFORM2 460-160
+#define PLATFORM3 460
 //在设计aiplayer时，应当注意到，jump函数中可能存在emojiplayer与aiplayer碰撞的情况
 //并且aiplayer的jump函数应当进行适当修改，以及mJumpStartLevel对于aiplayer不适用
 EmojiScene::EmojiScene()
 	:
 	mEmojiPlayer(Q_NULLPTR),
 	mAIPlayer(Q_NULLPTR),
-	mBackground(Q_NULLPTR),
-	mGround(Q_NULLPTR),
-	mPlatform(Q_NULLPTR)
+	mBackground(Q_NULLPTR)
 {
 	mBackground = new BackgroundItem(QPixmap("Background.png"));
 	setSceneRect(mBackground->boundingRect());
@@ -29,61 +29,61 @@ EmojiScene::EmojiScene()
 
 	addItem(mBackground);
 
-	mGround = new GroundItem(QPixmap("Ground.png"));
-	QRectF groundRect = mGround->boundingRect();
-	mGround->setPos((width() - groundRect.width()) / 2,
-		height() - groundRect.height());
-	addItem(mGround);
+	QSize groundRect = QPixmap("Ground.png").size();
+	QSize platformRect = QPixmap("Platform.png").size();
 
-	mPlatform = new PlatformItem * [4];
-	for (int i = 0; i < 4; ++i)
+	mMap = new EmojiMap();
+	mMap->setPlatformsPtr(&mPlatforms);
+	mMap->setPlatform((width() - groundRect.width()) / 2, height() - groundRect.height(), "Ground.png");
+	mMap->setPlatform(100, PLATFORM3, "Platform.png");
+	mMap->setPlatform(250, PLATFORM2, "Platform.png");
+	mMap->setPlatform(width() - 250 - platformRect.width(), PLATFORM2, "Platform.png");
+	mMap->setPlatform(width() - 100 - platformRect.width(), PLATFORM3, "Platform.png");
+	mMap->setPlatform(20, PLATFORM1, "Platform.png");
+	mMap->setPlatform(280, PLATFORM1, "Platform.png");
+	mMap->setPlatform(width() - 280 - platformRect.width(), PLATFORM1, "Platform.png");
+	mMap->setPlatform(width() - 20 - platformRect.width(), PLATFORM1, "Platform.png");
+	mMap->buildGraph(180, 180);
+
+	for (int i = 0; i < mPlatforms.size(); ++i)
 	{
-		mPlatform[i] = new PlatformItem(QPixmap("Platform.png"));
-		QRectF platformRect = mPlatform[i]->boundingRect();
-		switch (i)
-		{
-		case 0:mPlatform[i]->setPos(100, PLATFORM2); break;
-		case 1:mPlatform[i]->setPos
-			  (250, PLATFORM1); break;
-		case 2:mPlatform[i]->setPos
-			  (width() - 250 - platformRect.width(),
-				  PLATFORM1); break;
-		case 3:mPlatform[i]->setPos(width() - 100 - platformRect.width(),
-			PLATFORM2); break;
-		}
-
-		addItem(mPlatform[i]);
+		addItem(mPlatforms[i]);
 	}
-
+	
+	auto& ground = *mPlatforms[0];
 	mEmojiPlayer = new EmojiPlayerItem(QPixmap("Player.png"), this);
-	mEmojiPlayer->setPos(mGround->pos().x() + 50,
-		mGround->pos().y() - mEmojiPlayer->boundingRect().height());
+	mEmojiPlayer->setPos(ground.pos().x() + 50,
+		ground.pos().y() - mEmojiPlayer->boundingRect().height());
 	mEmojiPlayer->setStartPosX(mEmojiPlayer->pos().x());
 	mEmojiPlayer->setStartPosY(mEmojiPlayer->pos().y());
+	mEmojiPlayer->setCurrPlatform(0);
 	addItem(mEmojiPlayer);
 
-	mAIPlayer = new AIItem(QPixmap("AI.png"), this);
-	mAIPlayer->setPos(mGround->pos().x()
-		+ mGround->boundingRect().width()
+	mAIPlayer = new AIItem(QPixmap("AI.png"), this, mEmojiPlayer);
+	mAIPlayer->setPos(ground.pos().x()
+		+ ground.boundingRect().width()
 		- mAIPlayer->boundingRect().width() - 50,
-		mGround->pos().y() - mAIPlayer->boundingRect().height());
+		ground.pos().y() - mAIPlayer->boundingRect().height());
 	mAIPlayer->setStartPosX(mAIPlayer->pos().x());
 	mAIPlayer->setStartPosY(mAIPlayer->pos().y());
+	mAIPlayer->setCurrPlatform(0);
 	addItem(mAIPlayer);
 }
 
 EmojiScene::~EmojiScene()
 {
 	if (mBackground) delete mBackground;
-	if (mGround) delete mGround;
-	if (mPlatform)
-	{
-		for (int i = 0; i < 4; ++i)
-		{
-			delete mPlatform[i];
-		}
-		delete[] mPlatform;
-	}
+	if (mMap) delete mMap;
+}
+
+EmojiMap* EmojiScene::map()
+{
+	return mMap;
+}
+
+vector<PlatformItem*>& EmojiScene::platforms()
+{
+	return mPlatforms;
 }
 
 //由于EmojiView的keyPressEvent会屏蔽传递给scene和item的keyPressEvent
@@ -116,23 +116,17 @@ bool EmojiScene::checkMoveCollision(EmojiPlayerItem* player)
 	}
 	qreal playerBottom = player->pos().y() + player->boundingRect().height();
 
-	for (QGraphicsItem* item : this->items())
+	for (int i=0;i<mPlatforms.size();++i)
 	{
-		if (item == mBackground || item == mEmojiPlayer
-			|| item == mEmojiPlayer->point() || item == mAIPlayer
-			|| item == mAIPlayer->point())
-		{
-			continue;
-		}
+		qreal platformLeft = mPlatforms[i]->pos().x();
+ 		qreal platformRight = mPlatforms[i]->pos().x() + mPlatforms[i]->boundingRect().width();
+		qreal platformTop = mPlatforms[i]->pos().y();
 
-		qreal itemLeft = item->pos().x();
- 		qreal itemRight = item->pos().x() + item->boundingRect().width();
-		qreal itemTop = item->pos().y();
-
-		if (playerRight > itemLeft && playerLeft < itemRight
- 			&& playerBottom > itemTop - delta && playerBottom < itemTop + delta)
+		if (playerRight > platformLeft && playerLeft < platformRight
+ 			&& playerBottom > platformTop - delta && playerBottom < platformTop + delta)
 		{
-			player->setY(itemTop - player->boundingRect().height());
+			player->setCurrPlatform(i);
+			player->setY(platformTop - player->boundingRect().height());
 			player->stopAnimations();
 			return true;
 		}

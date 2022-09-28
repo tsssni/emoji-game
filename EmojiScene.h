@@ -9,6 +9,7 @@ class GroundItem;
 class PlatformItem;
 class QPropertyAnimation;
 class AtkPointItem;
+class EmojiMap;
 
 class EmojiScene :
     public QGraphicsScene
@@ -18,6 +19,9 @@ class EmojiScene :
 public:
     EmojiScene();
     virtual ~EmojiScene();
+
+    EmojiMap* map();
+    std::vector<PlatformItem*>& platforms();
 
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -38,7 +42,7 @@ private:
     EmojiPlayerItem* mEmojiPlayer;
     AIItem* mAIPlayer;
     BackgroundItem* mBackground;
-    GroundItem* mGround;
-    PlatformItem** mPlatform;
+    EmojiMap* mMap;
+    std::vector<PlatformItem*> mPlatforms;
 };
 

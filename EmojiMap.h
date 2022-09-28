@@ -2,19 +2,21 @@
 #include "PlatformItem.h"
 #include <vector>
 using std::vector;
+class EmojiScene;
 
 class EmojiMap
 {
 public:
-	bool setPlatform(qint16 x, qint16 y, QString platformTexPath = "Platform.png");
-	void buildGraph();
-	const vector<PlatformItem>& search(QPoint aiPos, QPoint playerPos) const;
+	void setPlatformsPtr(vector<PlatformItem*>* platformsPtr);
+	void setPlatform(qint16 x, qint16 y, QString platformTexPath);
+	void buildGraph(int jumpDist, int jumpHeight);
+	bool search(int aiIndex, int playerPos, vector<int>& route);
 
-	const vector<PlatformItem>& getPlatforms();
 protected:
-	bool checkPlatformOverlap(qint16 x, qint16 y);
+	bool dijShortestPath(int start, int end, vector<int>& prePlatform);
 
-	vector<PlatformItem> mPlatforms;
-	vector<vector<PlatformItem>> mPlatformGraph;
+	vector<PlatformItem*>* mPlatforms;
+	vector<vector<int>> mPlatformGraph;
+	vector<vector<int>> mPlatformGraphEdge;
 };
 

@@ -31,12 +31,18 @@ EmojiDecisionTree::EmojiDecisionTree(AIItem* ai) :mAI(ai)
     invertCondNear->addChild(condTooFar);
     seqFar->addChild(invertCondNear);
 
+    //判断是否有追逐路线
+    SequenceNode* seqRoute = new SequenceNode(mRoot);
+    CondRoute* condRoot = new CondRoute(mRoot);
+    seqFar->addChild(seqRoute);
+    seqRoute->addChild(condRoot);
+
     //追逐路线选择节点
     SelectorNode* selRoute = new SelectorNode(mRoot);
     SequenceNode* seqWalk = new SequenceNode(mRoot);
     SequenceNode* seqJump = new SequenceNode(mRoot);
     SequenceNode* seqDown = new SequenceNode(mRoot);
-    seqFar->addChild(selRoute);
+    seqRoute->addChild(selRoute);
     selRoute->addChild(seqWalk);
     selRoute->addChild(seqJump);
     selRoute->addChild(seqDown);
@@ -52,12 +58,6 @@ EmojiDecisionTree::EmojiDecisionTree(AIItem* ai) :mAI(ai)
     BehaviorJump* behaviorJump = new BehaviorJump(mRoot);
     seqJump->addChild(condJump);
     seqJump->addChild(behaviorJump);
-
-    //判断向下移动
-    CondDown* condDown = new CondDown(mRoot);
-    BehaviorDown* behaviorDown = new BehaviorDown(mRoot);
-    seqDown->addChild(condDown);
-    seqDown->addChild(behaviorDown);
 }
 
 EmojiDecisionTree::~EmojiDecisionTree()

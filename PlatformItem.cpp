@@ -8,3 +8,9 @@ PlatformItem::PlatformItem(const PlatformItem&)
 {
 }
 
+PlatformItem& PlatformItem::operator=(const PlatformItem& rhs)
+{
+	PlatformItem::PlatformItem(rhs);
+	return *this;
+}
+

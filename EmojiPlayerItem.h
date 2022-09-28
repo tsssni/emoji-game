@@ -48,6 +48,8 @@ public:
 
     void stopAnimations();
 
+    EmojiScene* scene();
+
     QTimer* playerTimer();
     void checkTimer();//检查时钟确定平移方向
 
@@ -62,8 +64,8 @@ public:
     
     //击打系数,系数越高被打的越远
     virtual int coefficient()const;
-    virtual void restorecoefficient();
-    virtual void addcoefficient();
+    virtual void restoreCoefficient();
+    virtual void addCoefficient();
 
     //设置复活点
     void setStartPosX(qreal x);
@@ -80,6 +82,9 @@ public:
     void setBeHitDirection(int value);
     
     AtkPointItem* point();
+
+    void setCurrPlatform(int index);
+    int platform();
 
 public:
     //通过factor来控制动画执行进度
@@ -113,9 +118,11 @@ public slots:
     void checkMoveCollision();
 
 protected:
+    EmojiScene* mScene;
 
     int mLastDirection;//只可能是1或者-1的朝向
     int mDirection;//角色的朝向
+    int mCurrPlatform;
 
     int mLife;//角色生命
     int mCoefficient;//影响系数
