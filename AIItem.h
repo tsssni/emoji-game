@@ -14,9 +14,12 @@ public:
     AIItem(const QPixmap& pixmap,
         EmojiScene* parentScene, 
         EmojiPlayerItem* player,
+<<<<<<< HEAD
         QGraphicsTextItem* label,
         QString name,
         QString picturePath,
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
         QGraphicsItem* parent = Q_NULLPTR);
     ~AIItem();
 

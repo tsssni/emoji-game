@@ -11,7 +11,10 @@
 #include <QPropertyAnimation>
 #include <QImage>
 #include <QPixmap>
+<<<<<<< HEAD
 #include <QGraphicsTextItem>
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 
 #define PLATFORM1 460-160*2
 #define PLATFORM2 460-160
@@ -52,15 +55,20 @@ EmojiScene::EmojiScene()
 	}
 	
 	auto& ground = *mPlatforms[0];
+<<<<<<< HEAD
 	mPlayerLabel = new QGraphicsTextItem("Player's Coefficient: 0%");
 	mPlayerLabel->setPos(120, height() - 120);
 	mPlayerLabel->setTextWidth(150);
 	mEmojiPlayer = new EmojiPlayerItem(QPixmap("Player.png"), this, mPlayerLabel, "Player's Coefficient: ","Player.png");
+=======
+	mEmojiPlayer = new EmojiPlayerItem(QPixmap("Player.png"), this);
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	mEmojiPlayer->setPos(ground.pos().x() + 50,
 		ground.pos().y() - mEmojiPlayer->boundingRect().height());
 	mEmojiPlayer->setStartPosX(mEmojiPlayer->pos().x());
 	mEmojiPlayer->setStartPosY(mEmojiPlayer->pos().y());
 	mEmojiPlayer->setCurrPlatform(0);
+<<<<<<< HEAD
 	addItem(mPlayerLabel);
 	addItem(mEmojiPlayer);
 
@@ -68,6 +76,11 @@ EmojiScene::EmojiScene()
 	mAIPlayerLabel->setPos(width() - 270, height() - 120);
 	mAIPlayerLabel->setTextWidth(150);
 	mAIPlayer = new AIItem(QPixmap("AI.png"), this ,mEmojiPlayer, mAIPlayerLabel,"AIPlayer's Coefficient: ","AI.png");
+=======
+	addItem(mEmojiPlayer);
+
+	mAIPlayer = new AIItem(QPixmap("AI.png"), this, mEmojiPlayer);
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	mAIPlayer->setPos(ground.pos().x()
 		+ ground.boundingRect().width()
 		- mAIPlayer->boundingRect().width() - 50,
@@ -75,7 +88,10 @@ EmojiScene::EmojiScene()
 	mAIPlayer->setStartPosX(mAIPlayer->pos().x());
 	mAIPlayer->setStartPosY(mAIPlayer->pos().y());
 	mAIPlayer->setCurrPlatform(0);
+<<<<<<< HEAD
 	addItem(mAIPlayerLabel);
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	addItem(mAIPlayer);
 }
 
@@ -137,11 +153,15 @@ bool EmojiScene::checkMoveCollision(EmojiPlayerItem* player)
 			player->setCurrPlatform(i);
 			player->setY(platformTop - player->boundingRect().height());
 			player->stopAnimations();
+<<<<<<< HEAD
 			if (player->point()->hitAnimation()->state()!=QAbstractAnimation::Running) 
 			{
 				player->setPixmap(QPixmap(player->picturePath()));
 			}
 				return true;
+=======
+			return true;
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 		}
 	}
 
@@ -157,6 +177,7 @@ bool EmojiScene::checkHitCollision(AtkPointItem* atkPoint)
 		{
 			enemy->setBeHitDirection(atkPoint->player()->lastDirction());
 			enemy->beHit();
+<<<<<<< HEAD
 			if (enemy == mEmojiPlayer)
 			{
 				QString tmp = "Player's Coefficient:" + QString::number(mEmojiPlayer->coefficient()) + "%";
@@ -167,6 +188,8 @@ bool EmojiScene::checkHitCollision(AtkPointItem* atkPoint)
 				QString tmp = "AIPlayer's Coefficient:" + QString::number(mAIPlayer->coefficient()) + "%";
 				mAIPlayerLabel->setPlainText(tmp);
 			}
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 			return true;
 		}
 	}

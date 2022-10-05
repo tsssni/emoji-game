@@ -2,7 +2,10 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include <QWidget>
+<<<<<<< HEAD
 #include <QGraphicsTextItem>
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 class EmojiPlayerItem;
 class AIItem;
 class BackgroundItem;
@@ -43,8 +46,11 @@ private:
     EmojiPlayerItem* mEmojiPlayer;
     AIItem* mAIPlayer;
     BackgroundItem* mBackground;
+<<<<<<< HEAD
     QGraphicsTextItem* mPlayerLabel;
     QGraphicsTextItem* mAIPlayerLabel;
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
     EmojiMap* mMap;
     std::vector<PlatformItem*> mPlatforms;
 };

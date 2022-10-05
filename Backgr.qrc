@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>pay.png</file>
@@ -5,3 +6,12 @@
         <file>ch_rev.png</file>
     </qresource>
 </RCC>
+=======
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>pay.png</file>
+        <file>MWin_Rev.png</file>
+        <file>ch_rev.png</file>
+    </qresource>
+</RCC>
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6

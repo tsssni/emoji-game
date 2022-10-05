@@ -8,11 +8,16 @@
 AIItem::AIItem(const QPixmap& pixmap,
 	EmojiScene* parentScene,
 	EmojiPlayerItem* player,
+<<<<<<< HEAD
 	QGraphicsTextItem* label,
 	QString name,
 	QString picturePath,
 	QGraphicsItem* parent)
     :EmojiPlayerItem(pixmap, parentScene, label, name,picturePath,  parent)
+=======
+	QGraphicsItem* parent)
+	:EmojiPlayerItem(pixmap, parentScene, parent)
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 {	
 	mPlayer = player;
 	mDecisionTree = new EmojiDecisionTree(this);

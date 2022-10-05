@@ -71,7 +71,11 @@
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <QtInstall>5.12.9_msvc2017_64</QtInstall>
+<<<<<<< HEAD
     <QtModules>core;gui;widgets;</QtModules>
+=======
+    <QtModules>core;gui;widgets</QtModules>
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
     <Import Project="$(QtMsBuild)\qt.props" />

@@ -1,6 +1,9 @@
 #pragma once
 #include <QGraphicsPixmapItem>
+<<<<<<< HEAD
 #include <QGraphicsTextItem>
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 class QPropertyAnimation;
 class EmojiScene;
 class QPropertyAnimation;
@@ -35,9 +38,12 @@ class EmojiPlayerItem :
 public:
     EmojiPlayerItem(const QPixmap& pixmap,
         EmojiScene* parentScene,
+<<<<<<< HEAD
         QGraphicsTextItem* label,
         QString name,
         QString picturePath,
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
         QGraphicsItem* parent = Q_NULLPTR);
 
     virtual void setWalkAnimation();
@@ -53,7 +59,10 @@ public:
     void stopAnimations();
 
     EmojiScene* scene();
+<<<<<<< HEAD
     
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 
     QTimer* playerTimer();
     void checkTimer();//检查时钟确定平移方向
@@ -87,12 +96,18 @@ public:
     void setBeHitDirection(int value);
     
     AtkPointItem* point();
+<<<<<<< HEAD
     
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 
     void setCurrPlatform(int index);
     int platform();
 
+<<<<<<< HEAD
     QString picturePath();
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 public:
     //通过factor来控制动画执行进度
     qreal walkFactor()const;
@@ -153,9 +168,12 @@ protected:
 
     EmojiScene* mParentScene;
     AtkPointItem* mPoint;
+<<<<<<< HEAD
     QGraphicsTextItem* mLabel;
     QString mPicturePath;
     QString mName;
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
     QTimer* mPlayerTimer;
 
     QPropertyAnimation* mWalkAnimation;

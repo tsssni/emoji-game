@@ -114,7 +114,10 @@ void AtkPointItem::checkHit()
 	if (mHitTimer->isActive() && QAbstractAnimation::Stopped == mHitAnimation->state()) {
 		mHitTimer->stop();
 		hide();
+<<<<<<< HEAD
 		mPlayer->setPixmap(QPixmap("player.png"));
+=======
+>>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 		return;
 	}
 }
