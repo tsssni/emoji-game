@@ -205,13 +205,8 @@ bool BehaviorHit::exec()
     {
         root->AI()->setDirection(1);
     }
-<<<<<<< HEAD
     root->AI()->setPixmap(QPixmap("AIAttack.png"));
 	//point->show();
-=======
-
-	point->show();
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	point->hitTimer()->start();
 	point->hit();
 	return true;

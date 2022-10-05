@@ -10,7 +10,6 @@
 EmojiPlayerItem::EmojiPlayerItem
 (const QPixmap& pixmap,
 	EmojiScene* parentScene,
-<<<<<<< HEAD
 	QGraphicsTextItem* label,
 	QString name,
 	QString picturePath,
@@ -20,11 +19,6 @@ EmojiPlayerItem::EmojiPlayerItem
 	mLabel(label),
 	mName(name),
 	mPicturePath(picturePath),
-=======
-	QGraphicsItem* parent)
-	: QGraphicsPixmapItem(pixmap, parent),
-	mParentScene(parentScene),
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	mHorizontalInput(0), mDirection(0), mLife(1),
 	mCoefficient(0), mLastDirection(1),
 	mPlayerTimer(new QTimer)
@@ -161,11 +155,7 @@ void EmojiPlayerItem::restoreLife()
 	this->setPos(mStartPosX, mStartPosY);
 	mLife = 1;
 	mCoefficient = 0;
-<<<<<<< HEAD
 	mLabel->setPlainText(mName + QString::number(0) + "%");
-=======
-	
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	return;
 }
 
@@ -247,10 +237,7 @@ void EmojiPlayerItem::keyPressEvent(QKeyEvent* event)
 	
 	switch(event->key()) {
 	case Qt::Key_Space:
-<<<<<<< HEAD
 		
-=======
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 		emit(jumpStart());
 		break;
 
@@ -289,12 +276,9 @@ void EmojiPlayerItem::jump()
 		setCurrPlatform(-1);
 		mJumpStartLevel = y();
 		mLastJumpValue = 0;
-<<<<<<< HEAD
 		QString tmp = mPicturePath;
 		tmp=tmp.insert(tmp.lastIndexOf("."), "Jiangluo");
 		this->setPixmap(QPixmap(tmp));
-=======
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 		mJumpAnimation->start();
 	}
 }
@@ -401,14 +385,11 @@ int EmojiPlayerItem::platform()
 	return mCurrPlatform;
 }
 
-<<<<<<< HEAD
 QString EmojiPlayerItem::picturePath()
 {
 	return mPicturePath;
 }
 
-=======
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 void EmojiPlayerItem::moveHorizontalEmojiPlayer()
 {
 	if (QAbstractAnimation::Running == mBeHitAnimation->state())
@@ -432,14 +413,10 @@ void EmojiPlayerItem::moveUpEmojiPlayer()
 
 void EmojiPlayerItem::hitAIPlayer()
 {
-<<<<<<< HEAD
 	QString tmp = mPicturePath;
 	tmp = tmp.insert(tmp.lastIndexOf(".") , "Attack");
 	this->setPixmap(QPixmap(tmp));
 	//mPoint->show();
-=======
-	mPoint->show();
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 	mPoint->hitTimer()->start();
 	mPoint->hit();
 }
@@ -477,12 +454,9 @@ void EmojiPlayerItem::checkMoveCollision()
 	{
 		setCurrPlatform(-1);
 		mDownStartLevel = y();
-<<<<<<< HEAD
 		QString tmp = mPicturePath;
 		tmp =tmp.insert(tmp.lastIndexOf("."), "Jiangluo");
 		this->setPixmap(QPixmap(tmp));
-=======
->>>>>>> ca7163100d4092aaa545b608dd3dde5f53caeec6
 		mDownAnimation->start();
 	}
 }
