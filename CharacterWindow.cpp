@@ -6,7 +6,7 @@ CharacterWindow::CharacterWindow(QWidget *parent) :
     QWidget(parent),mConBtn(Q_NULLPTR),mReBtn(Q_NULLPTR),
     mGameView(Q_NULLPTR),mScene(Q_NULLPTR)
 {
-    this->setWindowTitle("choose one character");
+    this->setWindowTitle("Tutorial");
     this->setFixedSize(1080,640);
 
 

@@ -40,10 +40,10 @@ EmojiScene::EmojiScene()
 	mMap->setPlatform(250, PLATFORM2, "Platform.png");
 	mMap->setPlatform(width() - 250 - platformRect.width(), PLATFORM2, "Platform.png");
 	mMap->setPlatform(width() - 100 - platformRect.width(), PLATFORM3, "Platform.png");
-	mMap->setPlatform(20, PLATFORM1, "Platform.png");
-	mMap->setPlatform(280, PLATFORM1, "Platform.png");
-	mMap->setPlatform(width() - 280 - platformRect.width(), PLATFORM1, "Platform.png");
-	mMap->setPlatform(width() - 20 - platformRect.width(), PLATFORM1, "Platform.png");
+	//mMap->setPlatform(20, PLATFORM1, "Platform.png");
+	//mMap->setPlatform(280, PLATFORM1, "Platform.png");
+	//mMap->setPlatform(width() - 280 - platformRect.width(), PLATFORM1, "Platform.png");
+	//mMap->setPlatform(width() - 20 - platformRect.width(), PLATFORM1, "Platform.png");
 	mMap->buildGraph(180, 180);
 
 	for (int i = 0; i < mPlatforms.size(); ++i)
